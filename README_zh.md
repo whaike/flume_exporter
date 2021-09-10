@@ -100,7 +100,8 @@ For details of the dashboard please see [Flume Exporter Metrics](https://grafana
     然后自动把他们监控起来，不需要每次启停一些程序后还要修改配置文件
 
 - feature/configreturn
-    主要作用：加一个web server ，通过http返回所有flume的配置，以便于汇总分析所有已启动的flume
+    主要作用：加一个web server ，通过http返回所有flume的配置，以便于汇总分析所有已启动的flume.
+  
     /conf -> 返回所有的配置文件
     ```
   [{
@@ -114,21 +115,22 @@ For details of the dashboard please see [Flume Exporter Metrics](https://grafana
     ConfigDetail是配置文件的字符串形式，经过了base64编码
 
     /fuck -> 返回配置文件的主要分析结果 
-  ```
-  [{
-        "topic": "",
-        "group": "",
-        "path": "",
-        "logExample": ""
-    },
-    {
-        "topic": "scene-server-log-new",
-        "group": "flume-scene-server-log-group-aly-oss",
-        "path": "oss://geek-hadoop/log/geek/scenelog/%{geekYear}/%{geekMonth}/%{geekDate}/%{geekHour}",
-        "logExample": "log.xxx..snappy"
-    }
-    ]
-  ```
+
+    ```
+      [{
+            "topic": "",
+            "group": "",
+            "path": "",
+            "logExample": ""
+        },
+        {
+            "topic": "scene-server-log-new",
+            "group": "flume-scene-server-log-group-aly-oss",
+            "path": "oss://geek-hadoop/log/geek/scenelog/%{geekYear}/%{geekMonth}/%{geekDate}/%{geekHour}",
+            "logExample": "log.xxx..snappy"
+        }
+        ]
+    ```
 之所以保留空，是想着可以通过返回直接判断解析过程是否存在异常，也就是flume运行数量和解析回来的数量是否一致。单独添加字段麻烦
 
 另外：
