@@ -15,6 +15,11 @@ type flumeInfo struct {
 	Port string
 }
 
+type FuckFlume struct {
+	flumeInfo
+	ConfigName string
+}
+
 //func getFlumeProcess() ([]flumeInfo, error){
 //	result := make([]flumeInfo,0)
 //	cmd2 := exec.Command("bash", "-c", "ps -ef | grep Dflume.monitoring.port| grep -v \"color=auto\" |awk '{match($0,/-Dflume.monitoring.port=([0-9]+) .+flume.node.Application -n (agent_.+) -f/,a);if(a[1]&&a[2]){print a[1]\":\"a[2]}}'")
@@ -71,6 +76,45 @@ func getFlumeProcess()([]flumeInfo, error) {
 		result = append(result, flumeInfo{
 			Name: m["agent"],
 			Port:  m["port"],
+		})
+	}
+	return result,nil
+}
+
+
+func FuckFlumeProcess()([]FuckFlume, error) {
+	result := make([]FuckFlume,0)
+	cmd2 := exec.Command("bash", "-c", "ps -ef | grep Dflume.monitoring.port| grep -v \"color=auto\"")
+	processInfo := ""
+	if output, err := cmd2.CombinedOutput(); err != nil {
+		return result, err
+	}else{
+		processInfo = string(output)
+	}
+	//i,_ := ioutil.ReadFile("/Users/whaike/Documents/code/flume_exporter/web/test.txt")
+	//processInfo := string(i)
+	if len(processInfo)==0{
+		fmt.Println("没查到进程")
+		return result,errors.New("未查询到flume进程")
+	}
+	reg := regexp.MustCompile(`-Dflume.monitoring.port=(?P<port>[0-9]+) .*flume.node.Application -n (?P<agent>agent_.+) -f (?P<conf>.+\.conf)`)
+	if reg == nil {
+		panic("匹配flume失败")
+	}
+	ps := reg.FindAllStringSubmatch(processInfo, -1)
+	groupNames := reg.SubexpNames()
+	for _,r := range ps{
+		m := make(map[string]string)
+		for j,port := range groupNames{
+			if j != 0 && port != ""{
+				m[port] = strings.TrimSpace(r[j])
+			}
+		}
+		result = append(result, FuckFlume{
+			flumeInfo{
+				Name:  m["agent"],
+				Port: m["port"],
+			},m["conf"],
 		})
 	}
 	return result,nil

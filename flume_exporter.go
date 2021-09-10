@@ -6,6 +6,7 @@ import (
 	"github.com/prometheus/common/version"
 	log "github.com/sirupsen/logrus"
 	"github.com/woozhijun/flume_exporter/exporter"
+	"github.com/woozhijun/flume_exporter/web"
 	"gopkg.in/alecthomas/kingpin.v2"
 	"net/http"
 )
@@ -44,6 +45,9 @@ func main() {
 	        </body>
 	        </html>`))
 	})
+
+	http.HandleFunc("/fuck", web.ConfigParse)
+	http.HandleFunc("/conf", web.ConfigStr)
 
 	if err := http.ListenAndServe(*listeningAddress, nil); err != nil {
 		log.Fatal(err)
