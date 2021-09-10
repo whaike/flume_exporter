@@ -111,6 +111,8 @@ For details of the dashboard please see [Flume Exporter Metrics](https://grafana
   },
   {}]
   ```
+    ConfigDetail是配置文件的字符串形式，经过了base64编码
+
     /fuck -> 返回配置文件的主要分析结果 
   ```
   [{
